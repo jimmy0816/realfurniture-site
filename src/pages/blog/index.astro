@@ -4,26 +4,333 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = [...new Set(posts.map(p => p.data.category))];
 ---
 
-<BaseLayout title="所有文章" description="里爾家具研究室全部文章列表">
-  <h1 style="font-size: 2rem; font-weight: 700; color: #5C4A30; margin-bottom: 2rem;">所有文章</h1>
-  <div style="display: grid; gap: 1.5rem;">
-    {posts.map((post) => (
-      <article style="padding: 1.5rem; background: white; border: 1px solid #E8DDD0; border-radius: 8px;">
-        <div class="flex items-center gap-2 mb-2">
-          <span style="font-size: 0.75rem; padding: 2px 8px; background: #F5F0E8; color: #8B7355; border-radius: 4px;">
-            {post.data.category}
-          </span>
-          <span style="font-size: 0.8rem; color: #B0A090;">
-            {post.data.pubDate.toLocaleDateString('zh-TW')}
-          </span>
+<BaseLayout
+  title="所有文章"
+  description="里爾家具研究室全部文章列表。深度探索台灣高級木製傢俱的工藝、選購指南與品牌評測。"
+>
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="麵包屑導航">
+        <a href="/" class="breadcrumb-link">首頁</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">所有文章</span>
+      </nav>
+      <p class="section-eyebrow">Article Library</p>
+      <h1 class="page-title">所有文章</h1>
+      <p class="page-subtitle">深度探索台灣高級木製家具的工藝美學</p>
+    </div>
+  </section>
+
+  <!-- Category Filter -->
+  <section class="filter-bar">
+    <div class="container">
+      <div class="filter-scroll">
+        <a href="/blog" class="filter-chip active">全部 ({posts.length})</a>
+        {categories.map(cat => (
+          <a href={`/categories/${cat}`} class="filter-chip">
+            {cat} ({posts.filter(p => p.data.category === cat).length})
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Posts Grid -->
+  <section class="posts-section">
+    <div class="container">
+      {posts.length === 0 ? (
+        <div class="posts-empty">
+          <p>文章整理中，敬請期待...</p>
         </div>
-        <h2 style="font-size: 1.2rem; font-weight: 600; color: #5C4A30;">
-          <a href={`/blog/${post.slug}`} style="color: #5C4A30; text-decoration: none;">{post.data.title}</a>
-        </h2>
-        <p style="color: #6B5D50; font-size: 0.95rem; line-height: 1.6; margin-top: 0.5rem;">{post.data.description}</p>
-      </article>
-    ))}
-  </div>
+      ) : (
+        <div class="posts-grid">
+          {posts.map((post, i) => (
+            <article class="post-card reveal" style={`transition-delay: ${(i % 3) * 0.08}s`}>
+              <a href={`/blog/${post.slug}`} class="post-card-image-link" aria-label={post.data.title}>
+                <div class="post-card-image">
+                  {post.data.image ? (
+                    <img
+                      src={post.data.image}
+                      alt={post.data.title}
+                      loading="lazy"
+                      width="400"
+                      height="267"
+                    />
+                  ) : (
+                    <div class="post-card-placeholder">
+                      <span class="placeholder-char">木</span>
+                    </div>
+                  )}
+                </div>
+              </a>
+              <div class="post-card-body">
+                <div class="post-card-meta">
+                  <a href={`/categories/${post.data.category}`} class="tag tag-wood">{post.data.category}</a>
+                  <time datetime={post.data.pubDate.toISOString()} class="post-date">
+                    {post.data.pubDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </time>
+                </div>
+                <h2 class="post-card-title">
+                  <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                </h2>
+                <p class="post-card-desc">{post.data.description}</p>
+                <a href={`/blog/${post.slug}`} class="post-card-cta">閱讀全文 →</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .page-hero {
+    background-color: var(--color-cream);
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--space-12) 0 var(--space-8);
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .breadcrumb-link {
+    font-size: var(--text-sm);
+    color: var(--color-stone);
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .breadcrumb-link:hover { color: var(--color-wood); }
+
+  .breadcrumb-sep {
+    font-size: var(--text-sm);
+    color: var(--color-warm-gray);
+  }
+
+  .breadcrumb-current {
+    font-size: var(--text-sm);
+    color: var(--color-charcoal);
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-wood);
+    margin-bottom: var(--space-2);
+  }
+
+  .page-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--color-charcoal);
+    margin-bottom: var(--space-3);
+  }
+
+  .page-subtitle {
+    font-size: var(--text-base);
+    color: var(--color-stone);
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    background-color: var(--color-parchment);
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--space-4) 0;
+    position: sticky;
+    top: var(--nav-height-desktop);
+    z-index: 50;
+  }
+
+  .filter-scroll {
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .filter-scroll::-webkit-scrollbar { display: none; }
+
+  .filter-chip {
+    display: inline-block;
+    padding: 0.375rem 1rem;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-stone);
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all var(--transition-base);
+  }
+
+  .filter-chip:hover {
+    color: var(--color-charcoal);
+    border-color: var(--color-stone);
+  }
+
+  .filter-chip.active {
+    background-color: var(--color-wood);
+    color: var(--color-parchment);
+    border-color: var(--color-wood);
+  }
+
+  /* Posts Section */
+  .posts-section {
+    padding: var(--space-12) 0 var(--space-24);
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .posts-empty {
+    text-align: center;
+    padding: var(--space-24) 0;
+    color: var(--color-stone);
+    font-size: var(--text-lg);
+  }
+
+  /* Post Card */
+  .post-card {
+    background-color: var(--color-cream);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+  }
+
+  .post-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+  }
+
+  .post-card-image-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .post-card-image {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background-color: var(--color-linen);
+  }
+
+  .post-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-slow);
+  }
+
+  .post-card:hover .post-card-image img {
+    transform: scale(1.03);
+  }
+
+  .post-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-linen), var(--color-warm-gray));
+    transition: transform var(--transition-slow);
+  }
+
+  .post-card:hover .post-card-placeholder {
+    transform: scale(1.03);
+  }
+
+  .placeholder-char {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: rgba(44, 40, 36, 0.2);
+  }
+
+  .post-card-body {
+    padding: var(--space-6);
+  }
+
+  .post-card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .post-date {
+    font-size: var(--text-xs);
+    color: var(--color-stone);
+  }
+
+  .post-card-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: var(--space-3);
+  }
+
+  .post-card-title a {
+    color: var(--color-charcoal);
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .post-card-title a:hover {
+    color: var(--color-wood);
+  }
+
+  .post-card-desc {
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    color: var(--color-stone);
+    margin-bottom: var(--space-4);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-card-cta {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-wood);
+    text-decoration: none;
+    transition: color var(--transition-base);
+  }
+
+  .post-card-cta:hover {
+    color: var(--color-wood-dark);
+  }
+
+  @media (max-width: 1024px) {
+    .posts-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid { grid-template-columns: 1fr; }
+    .filter-bar { top: var(--nav-height-mobile); }
+  }
+</style>
