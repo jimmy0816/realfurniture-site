@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+  --color-wood: #8B7355;
+  --color-wood-light: #C4A882;
+  --color-wood-dark: #5C4A30;
+  --color-bg: #FAFAF8;
+  --color-text: #1A1A1A;
+}
+
+html {
+  font-family: 'Noto Serif TC', 'Georgia', serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+body {
+  min-height: 100vh;
+}
+
+.prose h2, .prose h3 {
+  color: var(--color-wood-dark);
+}
+
+.prose a {
+  color: var(--color-wood);
+  text-decoration-color: var(--color-wood-light);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose table th {
+  background-color: #F5F0E8;
+  color: var(--color-wood-dark);
+}
+
+.prose table td, .prose table th {
+  border: 1px solid #E8DDD0;
+  padding: 0.5rem 0.75rem;
+}

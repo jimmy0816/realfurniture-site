@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const categories = [...new Set(posts.map(p => p.data.category))];
+  return categories.map(cat => ({
+    params: { category: cat },
+    props: { posts: posts.filter(p => p.data.category === cat) }
+  }));
+}
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
+const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={`${category} — 文章列表`} description={`里爾家具研究室 ${category} 分類文章`}>
+  <h1 style="font-size: 2rem; font-weight: 700; color: #5C4A30; margin-bottom: 2rem;">{category}</h1>
+  <div style="display: grid; gap: 1.5rem;">
+    {sorted.map(post => (
+      <article style="padding: 1.5rem; background: white; border: 1px solid #E8DDD0; border-radius: 8px;">
+        <h2 style="font-size: 1.2rem; font-weight: 600; color: #5C4A30;">
+          <a href={`/blog/${post.slug}`} style="color: #5C4A30; text-decoration: none;">{post.data.title}</a>
+        </h2>
+        <p style="color: #6B5D50; font-size: 0.95rem; line-height: 1.6; margin-top: 0.5rem;">{post.data.description}</p>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

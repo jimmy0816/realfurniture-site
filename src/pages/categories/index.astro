@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+const categories = [...new Set(posts.map(p => p.data.category))];
+---
+
+<BaseLayout title="文章分類" description="里爾家具研究室文章分類">
+  <h1 style="font-size: 2rem; font-weight: 700; color: #5C4A30; margin-bottom: 2rem;">文章分類</h1>
+  <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+    {categories.map(cat => (
+      <a href={`/categories/${cat}`} style="padding: 0.75rem 1.5rem; background: #F5F0E8; color: #5C4A30; border-radius: 8px; font-weight: 500; text-decoration: none; border: 1px solid #C4A882;">
+        {cat}（{posts.filter(p => p.data.category === cat).length} 篇）
+      </a>
+    ))}
+  </div>
+</BaseLayout>

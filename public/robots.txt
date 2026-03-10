@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://realfurniture.tw/sitemap-index.xml

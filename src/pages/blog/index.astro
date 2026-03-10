@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="所有文章" description="里爾家具研究室全部文章列表">
+  <h1 style="font-size: 2rem; font-weight: 700; color: #5C4A30; margin-bottom: 2rem;">所有文章</h1>
+  <div style="display: grid; gap: 1.5rem;">
+    {posts.map((post) => (
+      <article style="padding: 1.5rem; background: white; border: 1px solid #E8DDD0; border-radius: 8px;">
+        <div class="flex items-center gap-2 mb-2">
+          <span style="font-size: 0.75rem; padding: 2px 8px; background: #F5F0E8; color: #8B7355; border-radius: 4px;">
+            {post.data.category}
+          </span>
+          <span style="font-size: 0.8rem; color: #B0A090;">
+            {post.data.pubDate.toLocaleDateString('zh-TW')}
+          </span>
+        </div>
+        <h2 style="font-size: 1.2rem; font-weight: 600; color: #5C4A30;">
+          <a href={`/blog/${post.slug}`} style="color: #5C4A30; text-decoration: none;">{post.data.title}</a>
+        </h2>
+        <p style="color: #6B5D50; font-size: 0.95rem; line-height: 1.6; margin-top: 0.5rem;">{post.data.description}</p>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

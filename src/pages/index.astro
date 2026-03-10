@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 10);
+---
+
+<BaseLayout
+  title="里爾家具研究室 | RealFurniture"
+  description="台灣高級木製傢俱深度評測與選購指南。從實木餐桌到手工木椅，我們用專業眼光替你把關每一件家中珍品。"
+>
+  <!-- Hero -->
+  <section class="text-center py-16 mb-12" style="border-bottom: 1px solid #C4A882;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🪵</div>
+    <h1 style="font-size: 2.5rem; font-weight: 700; color: #5C4A30; margin-bottom: 1rem;">
+      里爾家具研究室
+    </h1>
+    <p style="font-size: 1.1rem; color: #8B7355; max-width: 560px; margin: 0 auto; line-height: 1.8;">
+      台灣高級木製傢俱的深度研究基地。<br />
+      用職人眼光，替你找到值得傳家的每一件木作。
+    </p>
+  </section>
+
+  <!-- Latest Posts -->
+  <section>
+    <h2 style="font-size: 1.5rem; font-weight: 700; color: #5C4A30; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #C4A882;">
+      最新文章
+    </h2>
+
+    {posts.length === 0 ? (
+      <p style="color: #8B7355;">文章整理中，敬請期待...</p>
+    ) : (
+      <div style="display: grid; gap: 1.5rem;">
+        {posts.map((post) => (
+          <article style="padding: 1.5rem; background: white; border: 1px solid #E8DDD0; border-radius: 8px; transition: border-color 0.2s;">
+            <div class="flex items-center gap-2 mb-2">
+              <span style="font-size: 0.75rem; padding: 2px 8px; background: #F5F0E8; color: #8B7355; border-radius: 4px;">
+                {post.data.category}
+              </span>
+              <span style="font-size: 0.8rem; color: #B0A090;">
+                {post.data.pubDate.toLocaleDateString('zh-TW')}
+              </span>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 600; color: #5C4A30; margin-bottom: 0.5rem;">
+              <a href={`/blog/${post.slug}`} style="color: #5C4A30; text-decoration: none;">
+                {post.data.title}
+              </a>
+            </h3>
+            <p style="color: #6B5D50; font-size: 0.95rem; line-height: 1.6;">
+              {post.data.description}
+            </p>
+            <a href={`/blog/${post.slug}`} style="display: inline-block; margin-top: 0.75rem; font-size: 0.875rem; color: #8B7355; font-weight: 500;">
+              閱讀全文 →
+            </a>
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
