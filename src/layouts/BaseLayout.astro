@@ -78,13 +78,8 @@ const jsonLdBreadcrumb = {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <!-- GA4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMEKLFZ4CR"></script>
-  <script is:inline>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-EMEKLFZ4CR');
-  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EMEKLFZ4CR" is:inline></script>
+  <Fragment set:html={`<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-EMEKLFZ4CR');</script>`} />
 
   <!-- Slot for additional head content -->
   <slot name="head" />
