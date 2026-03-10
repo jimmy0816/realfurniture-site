@@ -20,6 +20,8 @@ const {
   article,
 } = Astro.props;
 
+import '../styles/global.css';
+
 const siteName = '里爾家具研究室 | RealFurniture';
 const siteUrl = 'https://realfurniture.tw';
 
@@ -78,7 +80,7 @@ const jsonLdBreadcrumb = {
   <!-- Slot for additional head content -->
   <slot name="head" />
 
-  <link rel="stylesheet" href="/styles/global.css" />
+  <!-- global.css imported via frontmatter -->
 </head>
 <body>
   <!-- ============================
