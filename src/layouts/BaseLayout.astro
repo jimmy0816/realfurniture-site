@@ -22,7 +22,8 @@ const {
 
 import '../styles/global.css';
 
-const siteName = '里爾家具研究室 | RealFurniture';
+const siteName = '里爾家具研究室';
+const fullSiteName = '里爾家具研究室 | RealFurniture';
 const siteUrl = 'https://realfurniture.tw';
 
 const jsonLdWebSite = {
@@ -46,13 +47,13 @@ const jsonLdBreadcrumb = {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{title} | {siteName}</title>
+  <title>{title === siteName ? fullSiteName : `${title} | ${siteName}`}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
 
   <!-- Open Graph -->
   <meta property="og:type" content={article ? 'article' : 'website'} />
-  <meta property="og:title" content={`${title} | ${siteName}`} />
+  <meta property="og:title" content={title === siteName ? fullSiteName : `${title} | ${siteName}`} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:site_name" content={siteName} />
@@ -62,7 +63,7 @@ const jsonLdBreadcrumb = {
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={`${title} | ${siteName}`} />
+  <meta name="twitter:title" content={title === siteName ? fullSiteName : `${title} | ${siteName}`} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
 
